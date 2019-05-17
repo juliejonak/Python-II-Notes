@@ -1,4 +1,5 @@
 from category import Category
+from product import Product
 
 class Store: 
     def __init__(self, name, categories):
@@ -15,7 +16,7 @@ class Store:
         output += str(i) + '. Exit'
         return output
 
-my_store = Store("The Dugout", [Category("Running"), Category("Baseball"), Category("Basketball")])
+my_store = Store("The Dugout",   [Category("Running"), Category("Baseball", [Product('baseball bat', 299.99), Product('baseball', 11.99)]), Category("Basketball")])
 print(my_store)
 
 selection = 0
