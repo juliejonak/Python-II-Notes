@@ -25,7 +25,8 @@ while selection != len(my_store.categories)+1:
     try:
         selection = int(selection)
         if selection > 0 and selection < len(my_store.categories)+1:
-            print(f"You chose {my_store.categories[selection-1].name}.")
+            # print(f"You chose {my_store.categories[selection-1].name}.")
+            print(f"You chose {my_store.categories[selection-1]}.")
         elif(selection > len(my_store.categories)+1):
             print("Please select a valid number")
     except ValueError:
