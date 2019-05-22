@@ -565,9 +565,3 @@ But we are not creating DRY code because we're re-typing the same first part of 
 
 Similarly to before, we can make use of super() to call a method on the parent class to fill in the first part of that string return.
 
-
-
-
-
-
-
