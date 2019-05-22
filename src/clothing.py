@@ -9,7 +9,5 @@ class Clothing(Product):
         self.size = size
     
     def __repr__(self):
-        return str(self.name) + '\t$' + str(self.price) + " comes in " + str(self.color) + ', ' + str(self.size)
-
-
+        return super().__repr__() + " comes in " + str(self.color) + ', ' + str(self.size)
 
