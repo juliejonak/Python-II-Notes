@@ -1,4 +1,6 @@
-# NOTES
+This repo includes the final notes as they ended up over the course of both lectures. You can create your own files to follow along and test writing the code, or simply view the final iteration. Code snippets are included along the way to see the progression to the final code base.
+
+# NOTES Lecture I
 
 We have a store called ET World that has:
 
@@ -140,6 +142,8 @@ Now if the user enters a letter instead, a more accurate error message is sent t
 
 That handles a specific ValueError (and there are other specific error messages that we can handle) but we could also create a more general error handling too.
 
+(See more errors in the Python 3 docs: https://docs.python.org/3/library/exceptions.html)
+
 To allow the user to continue to input choices, we would wrap our logic in a while loop. We could do this by tacking on a fourth option that is a hard coded exit:
 
 ```
@@ -259,3 +263,311 @@ if selection > 0 and selection <= len(my_store.categories)+1:
                 
             print(f"You chose {my_store.categories[selection-1].name}.")
 ```
+
+
+# Notes Lecture II
+
+##### Inheritance and Association
+
+```Perhaps the most important concept in OOP, a class may inherit from another class. This gives the child class all of the variables and methods found in the parent class, or classes, automatically. Child classes can also override parent methods to define alternate or additional behaviors. Inheritance is also sometimes described as an “is-a” relationship.```
+
+Often clarified by describing one as "is a" versus "has a"
+
+"Has a" indicates an `association relationship`. For example, the relationship between Week and Day is associative, because a Week has a Day.
+
+"Is a" indicates an `inheritance relationship`. For example, the relationship between a Comic Book and a Book is inherited, because a Comic Book is a type of Book.
+
+When one class inherits from another class, that is an "is a" (inherited) relationship. We can test it by asking ourselves if this sentence makes sense for two classes:
+
+```ClassA is a Class B```
+
+If that makes sense and is true, that is an "is a" relationship.
+
+If one class wouldn't make sense using the "is a" test, it's probably associative instead of inherited.
+
+```Category is a Store```
+
+Category is not a Store (per our current code example), so that is NOT an "is a" (inherited) relationship.
+
+```A Store has a Category.```
+
+This statement is true, so the relationship between these two classes is a "has a" (associative) relationship.
+
+More strongly typed classes would indicate the Type in the class, so that it's more obvious. In Python it's not always clear but does occur.
+
+Currently, our Store has association, but not inheritance.
+
+For further reading: https://interactivepython.org/runestone/static/JavaReview/OOBasics/ooAssocVsInherit.html
+
+
+
+##### Composition and Aggregation
+
+Within an association relationship, there are two further specializations: `composition` and `aggregation`.
+
+A *composition* relationship exists when one class has instance variables (attributes) that are using a second class. One class is a container while the other is the content. If you delete the container class, all of its content class instances are also deleted.
+
+An example of this would be a class of Salary and a class of Employee, which uses salary as an attribute on its class instance.
+
+If the Employee and Salary were created like so:
+
+```class Employee:
+        def __init__(self, pay):
+            self.pay=pay
+            self.obj_salary=Salary(self.pay)
+```
+
+This instance of Salary would cease to exist if we deleted the container class instance of this Employee. The Salary is created by this instance of Employee and does not exist separately from it.
+
+*Aggregation* is a form of composition where the content object can exist without the container object.
+
+If we adjust the Employee and Salary instances like so:
+
+```class Salary:
+        def __init__(self, pay):
+            self.pay = pay
+
+        def get_total_(self):
+            return (self.pay*12)
+    
+    class Employee:
+        def __init__(self, pay):
+            self.pay = pay
+        
+        def annual_salary(self):
+            return "Total: " + str(self.pay.get_total())
+
+obj_sal = Salary(100)
+obj_emp = Employee(obj_sal, 10)
+print (obj_emp.annual_salary())
+```
+
+Salary exists independently of any single instance of Employee, so it has an aggregate relationship to Employee.
+
+
+In our code example, the attributes in our Store class for categories are defined in a separate class (Category). We could delete the Store class and the categories would still exist, as they are currently defined. This is an _aggregation_ example.
+
+If, however, the Category instances were created _in_ the Store instance, that would be a _composition_ example. By deleting the Store, the Categories would also cease to exist.
+
+Further reading: https://stackoverflow.com/questions/19861785/composition-and-aggregation-in-python
+
+
+#### In summary:
+
+*Inheritance*: a class may inherit from another class. This gives the child class all of the variables and methods found in the parent class, or classes, automatically. "Is a" relationship.
+
+*Association*: objects or constructs that exist in the real-world and are related to each other that do not have hierarchical, inheritance relationships. "Has a" relationship.
+
+
+#### Let's apply inheritance to our Store class
+
+Add a new file called `product.py` to our `src` folder. We'll assume we have a broad variety of products in general categories, plus more specific variants - this is a good example for inheritance.
+
+Some good attributes for general Products would exist for every product, like name and price:
+
+```
+class Product:
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+```
+
+Different products that could exist could be clothing, food, shoes, etc.. And each of those could be broken down into more specific levels within those categories.
+
+In a hierarchy, the class at the top would be called a `Superclass` or `Parent Class` (like Product class). A `sub-class` or `child class` is a lower hierarchy class (like clothing, shoes).
+
+The child class is always going to be bigger than the parent class - not in terms of lines of code, but because it _inherits_ everything from the parent class, plus has its own unique attributes. The Clothing Class will not just include the code for the Clothing Class, but also all of the functiosn and attributes defined in the Product Class. And so on for all of the child classes below it.
+
+While each product would have a specific department, we'll actually use that to help catgorize products under the Category class, like so:
+
+```class Category:
+
+    def __init__(self, name, products):
+    # add later: product list parameter
+        self.name = name
+        self.products = products
+```
+
+
+There is nothing we do in Python specifically to indicate something is a Parent class, but there is syntax required for indicating something is a child class.
+
+
+Let's also add the string version of our Product for our end user (not developer) to see:
+
+```    
+def __str__(self):
+    return self.name + '\t$' + str(self.price)
+```
+
+Now, to test that our Product class is working as intended:
+
+```
+p = Product('baseball bat', 19.99)
+print(p)
+```
+
+In the terminal, it prints:
+
+`baseball bat	$19.99`
+
+Let's take that and add to our store.py file:
+
+```from product import Product```
+
+Under the Baseball category, we'll add a list of Products:
+
+```
+my_store = Store("The Dugout",   [Category("Running"), Category("Baseball", [Product('baseball bat', 299.99), Product('baseball", 11.99')]), Category("Basketball")])
+```
+
+Now, we need to update our Category class to handle new products:
+
+```
+class Category:
+
+    def __init__(self, name, *products):
+        # add later: product list parameter
+        self.name = name
+        self.products = products
+
+    def __repr__(self):
+        output = self.name
+        if(self.products):
+            for p in self.products:
+                output += '\n' + str(p)
+            return output
+        else:
+            return "No products in " + self.name
+```
+
+We've made products an optional parameter, in case a Category does not have any products, and handled the output using an if/else statement.
+
+When also need to adjust the print line on line 28 in store.py:
+
+```            print(f"You chose {my_store.categories[selection-1]}.")
+```
+
+In `store.py`, our print statement points to the `__str__` method on `catgory.py` for what to print (the return). 
+
+```            for p in self.products:
+                output += '\n' + str(p)
+```
+
+Points back to Product.py which will look at its string output for what to print:
+
+```
+    def __repr__(self):
+        return self.name + '\t$' + str(self.price)
+```
+
+Which is how we end up with the user's selection being printed as:
+
+```
+You chose Baseball
+[baseball bat	$299.99, baseball	$11.99].
+```
+
+Let's add some child classes with the files `equipment.py` and `clothing.py`
+
+To indicate that these classes are child classes and have a parent class, we'll use this syntax. We'll define the class Name(Parent Class Name) with the parent class in the parenthesis following, like so:
+
+```
+class Clothing(Product):
+    def __init__(self):
+        
+```
+
+Referencing our Product parent class, we can see that any child class is setup to have the attributes of name and price. What are additional attributes that clothing might have, that products in general don't necessarily? Likely color and size.
+
+So our clothing child class is setup like this:
+
+```
+class Clothing(Product):
+    def __init__(self, name, price, color, size):
+        #...
+        self.color = color
+        self.size = size
+        
+```
+
+But how do we initialize the inherited attributes from the parent (name and price) without tediously typing out the same self.price = price?
+
+This is where the `super` keyword comes into play. Using `super()` we can give the child class the inherited attributes and setup of a parent class.
+
+Super allows us to pull from the parent class - reference this attribute/function from the parent class.
+
+In the parent Product class, we've already initialized what to do with name in price, so we'll use super to call init() from the parent, and pass the attributes that we want the parent to handle, like so:
+
+```
+class Clothing(Product):
+    def __init__(self, name, price, color, size):
+        super().__init__(name, price)
+        self.color = color
+        self.size = size
+```
+
+It doesn't know how to handle color or size, so we do not pass those to the super() function, but it can handle name and price. We'll handle the parent super() initializations first, then initialize the unique, standalone attributes within this child class init().
+
+
+Let's setup our equipment child class too:
+
+```
+class Equipment(Product):
+    def __init__(self, name, price, style, weight):
+        super().__init__(name, price)
+        self.style = style
+        self.weight = weight
+```
+
+Style will be used to indicate if this item is unisex, men's, women's, or children's sizing.
+
+We also need to import Product from our product.py file:
+
+```
+from product import Product
+```
+
+Let's test this by printing within our Store, like so, to use Clothing and Equipment:
+
+```
+my_store = Store("The Dugout",   [Category("Running", [Clothing('Shorts', 19.99, 'red', 12), Clothing('Socks', 8.99, 'white', 10)]), Category("Baseball", [Equipment('baseball bat', 299.99, 'unisex', 2.5), Equipment('baseball', 11.99, 'kids', 0.5)]), Category("Basketball")])
+```
+
+Now our Running department has Socks and Shorts, and our Baseball department has a baseball and baseball bat.
+
+Our terminal is currently printing the name and price of these child classes, but not the sub-attributes (size or color) because our clothing and equipment child classes do not have a defined string method.
+
+It's still being cast to a string because it has inherited the parent class str() method that defines what the string value is (instead of the memory location), but it is not set to handle the sub-attributes.
+
+Now, when we have a child class, if there is no indicated str() or repr() method on that class, it will use the str() or repr() method on the parent class. So, until we define one on the clothing class, it will continue to use the one on the category class.
+
+But if we add to the clothing child class:
+
+```
+    def __repr__(self):
+        return str(self.name) + '\t$' + str(self.price) + " comes in " + str(self.color) + ', ' + str(self.size)
+
+```
+
+The terminal will now print a string representation of the clothing products like so:
+
+```
+Shorts	$19.99 comes in red, 12
+Socks	$8.99 comes in white, 10.
+```
+
+But we are not creating DRY code because we're re-typing the same first part of that repr() return. How could we use super to eliminate the duplicate code?
+
+```
+    def __repr__(self):
+        return super().__repr__() + " comes in " + str(self.color) + ', ' + str(self.size)
+```
+
+Similarly to before, we can make use of super() to call a method on the parent class to fill in the first part of that string return.
+
+
+
+
+
+
+
