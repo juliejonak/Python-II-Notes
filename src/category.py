@@ -1,6 +1,7 @@
-from product import Product
+# from product import Product
 
 class Category:
+
 
     def __init__(self, name, *products):
         # add later: product list parameter
@@ -11,10 +12,11 @@ class Category:
         output = self.name
         if(self.products):
             for p in self.products:
-                output += '\n' + str(p)
-            return output
+                for item in p:
+                    output += '\n' + str(item)
         else:
-            return "No products in " + self.name
+            output = "No products in " + self.name
+        return output
 
 
 # baseballtest = Category("Baseball", [Product('baseball bat', 299.99), Product('baseball', 11.99)])

@@ -1,5 +1,7 @@
 from category import Category
 from product import Product
+from equipment import Equipment
+from clothing import Clothing
 
 class Store: 
     def __init__(self, name, categories):
@@ -16,7 +18,9 @@ class Store:
         output += str(i) + '. Exit'
         return output
 
-my_store = Store("The Dugout",   [Category("Running"), Category("Baseball", [Product('baseball bat', 299.99), Product('baseball', 11.99)]), Category("Basketball")])
+my_store = Store("The Dugout",   [Category("Running", [Clothing('Shorts', 19.99, 'red', 12), Clothing('Socks', 8.99, 'white', 10)]), Category("Baseball", [Equipment('baseball bat', 299.99, 'unisex', 2.5), Equipment('baseball', 11.99, 'kids', 0.5)]), Category("Basketball")])
+
+
 print(my_store)
 
 selection = 0
