@@ -1,5 +1,9 @@
 This repo includes the final notes as they ended up over the course of both lectures. You can create your own files to follow along and test writing the code, or simply view the final iteration. Code snippets are included along the way to see the progression to the final code base.
 
+[Python Cheat Sheets](https://ehmatthes.github.io/pcc/cheatsheets/README.html)
+
+<br>
+
 # NOTES Lecture I
 
 We have a store called ET World that has:
